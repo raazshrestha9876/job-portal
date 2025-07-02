@@ -82,6 +82,7 @@ export const updateCompanyValidation = [
   body("website").optional().trim().isURL().withMessage("Invalid website URL"),
   body("logo").optional().trim().isURL().withMessage("Invalid logo URL"),
   body("location").optional().trim(),
+  body("active").optional(),
 ];
 
 export const deleteCompanyValidation = [

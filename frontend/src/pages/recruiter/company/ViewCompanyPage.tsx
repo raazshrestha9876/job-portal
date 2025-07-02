@@ -13,11 +13,12 @@ import CompanyView from "@/components/recruiter/company/CompanyView";
 import { CompanyDeleteDialog } from "@/components/recruiter/company/CompanyDeleteDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "@/redux/store/store";
-import { companyDeleteDialogOpen } from "@/redux/slice/company";
+import { companyDeleteDialogOpen, companyEditSheetOpen } from "@/redux/slice/company";
+import CompanyEditSheet from "@/components/recruiter/company/CompanyEditSheet";
 
 const ViewCompanyPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { isCompanyDeleteDialogOpen } = useSelector(
+  const { isCompanyDeleteDialogOpen, isCompanyEditSheetOpen } = useSelector(
     (state: RootState) => state.companies
   );
 
@@ -30,8 +31,17 @@ const ViewCompanyPage = () => {
     );
   };
 
+  const handleEditSheetOpen = (index: number, open: boolean) => {
+    dispatch(
+      companyEditSheetOpen({
+        index,
+        open,
+      })
+    );
+  };
+
   return (
-    <div className="container mx-auto  py-8 w-full">
+    <div className="px-10 py-7 mx-auto  w-full">
       {/* Header Section */}
       <div className="mb-8">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between">
@@ -47,14 +57,6 @@ const ViewCompanyPage = () => {
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="text-slate-400" />
-                <BreadcrumbItem>
-                  <BreadcrumbLink
-                    href="/recruiter/company/add"
-                    className="text-slate-600 hover:text-slate-900 font-medium transition-colors"
-                  >
-                    Add
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
             <div className="space-y-2">
@@ -80,8 +82,12 @@ const ViewCompanyPage = () => {
       </div>
 
       {/* Content Section */}
-      <CompanyView onDeleteDialogOpen={handleDeleteDialogOpen} />
+      <CompanyView
+        onDeleteDialogOpen={handleDeleteDialogOpen}
+        onEditSheetOpen={handleEditSheetOpen}
+      />
       {isCompanyDeleteDialogOpen && <CompanyDeleteDialog />}
+      {isCompanyEditSheetOpen && <CompanyEditSheet />}
     </div>
   );
 };

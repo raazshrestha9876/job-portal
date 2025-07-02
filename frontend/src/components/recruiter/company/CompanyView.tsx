@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import {
   Building2,
@@ -20,7 +20,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useGetCompanyQuery } from "@/redux/services/companyApi";
+import {  useGetOwnCompanyQuery } from "@/redux/services/companyApi";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/redux/store/store";
@@ -28,11 +28,16 @@ import { setCompanies } from "@/redux/slice/company";
 
 interface CompanyViewProps {
   onDeleteDialogOpen: (index: number, open: boolean) => void;
+  onEditSheetOpen: (index: number, open: boolean) => void;
 }
 
-const CompanyView = ({ onDeleteDialogOpen }: CompanyViewProps) => {
-  const { data: companies } = useGetCompanyQuery();
+const CompanyView = ({
+  onDeleteDialogOpen,
+  onEditSheetOpen,
+}: CompanyViewProps) => {
+  const { data: companies } = useGetOwnCompanyQuery();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (companies) {
@@ -43,7 +48,7 @@ const CompanyView = ({ onDeleteDialogOpen }: CompanyViewProps) => {
   return (
     <>
       {companies?.length === 0 ? (
-        <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+        <Card className="border-0  bg-white/80 backdrop-blur-sm">
           <CardContent className="flex flex-col items-center justify-center py-24">
             <div className="relative mb-8">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full blur-xl opacity-60"></div>
@@ -76,7 +81,7 @@ const CompanyView = ({ onDeleteDialogOpen }: CompanyViewProps) => {
           {companies?.map((company, index) => (
             <Card
               key={company._id}
-              className="group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg bg-white/90 backdrop-blur-sm overflow-hidden"
+              className="group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0  bg-white/90 backdrop-blur-sm overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
@@ -150,6 +155,9 @@ const CompanyView = ({ onDeleteDialogOpen }: CompanyViewProps) => {
                   </Badge>
                   <div className="flex gap-2">
                     <Button
+                      onClick={() =>
+                        navigate(`/recruiter/company/${company._id}`)
+                      }
                       variant="outline"
                       size="sm"
                       className="border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 bg-transparent"
@@ -157,6 +165,7 @@ const CompanyView = ({ onDeleteDialogOpen }: CompanyViewProps) => {
                       View
                     </Button>
                     <Button
+                      onClick={() => onEditSheetOpen(index, true)}
                       variant="outline"
                       size="sm"
                       className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200 bg-transparent"

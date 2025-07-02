@@ -7,11 +7,13 @@ export interface ICompany {
   website?: string;
   description: string;
   logo?: string;
+  active?: boolean;
   createdAt: Date;
 }
 
 export interface ICompanyState {
     companies: ICompany[];
     isCompanyDeleteDialogOpen: boolean;
+    isCompanyEditSheetOpen: boolean;
     selectedIndex: number;
 }

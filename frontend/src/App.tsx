@@ -7,6 +7,7 @@ import SeekerLayout from "./pages/seeker/SeekerLayout";
 import RecruiterDashboard from "./pages/recruiter/dashboard/DashboardPage";
 import AddCompanyPage from "./pages/recruiter/company/AddCompanyPage";
 import ViewCompanyPage from "./pages/recruiter/company/ViewCompanyPage";
+import ViewCompanyDetailsPage from "./pages/recruiter/company/ViewCompanyDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
           {
             path: "company",
             element: <ViewCompanyPage />,
+          },
+          {
+            path: "company/:id",
+            element: <ViewCompanyDetailsPage />,
           },
         ],
       },

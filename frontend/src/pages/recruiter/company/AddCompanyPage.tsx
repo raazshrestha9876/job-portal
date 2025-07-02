@@ -59,7 +59,7 @@ export default function AddCompanyPage() {
   }
 
   return (
-    <div className="container mx-auto min-h-[90vh] py-8 w-full">
+    <div className="px-10 py-7 mx-auto min-h-[90vh] w-full">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -232,7 +232,7 @@ export default function AddCompanyPage() {
                     {isLoading && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    Create Company
+                    Create
                   </Button>
                   <Button
                     type="button"

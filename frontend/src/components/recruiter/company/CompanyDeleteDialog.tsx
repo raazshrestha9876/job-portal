@@ -8,7 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useSelectedCompanyId } from "@/hooks/useSelectedCompanyId";
+import { useSelectedCompany } from "@/hooks/useSelectedCompany";
 import { useDeleteCompanyMutation } from "@/redux/services/companyApi";
 import { companyDeleteDialogOpen } from "@/redux/slice/company";
 import { type AppDispatch, type RootState } from "@/redux/store/store";
@@ -21,12 +21,12 @@ export function CompanyDeleteDialog() {
   const { isCompanyDeleteDialogOpen } = useSelector(
     (state: RootState) => state.companies
   );
-  const selectedCompanyId = useSelectedCompanyId();
+  const selectedCompany = useSelectedCompany();
   const [deleteCompany, { isLoading }] = useDeleteCompanyMutation();
 
   const handleDelete = async () => {
     try {
-      await deleteCompany(selectedCompanyId).unwrap();
+      await deleteCompany(selectedCompany._id).unwrap();
     } catch (error) {
       console.error(error);
     }

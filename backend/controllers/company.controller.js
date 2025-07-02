@@ -43,9 +43,31 @@ export const getOwnCompany = async (req, res, next) => {
   }
 };
 
+export const getOwnCompanyDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const company = await Company.findById(id);
+    if (!company) return next(errorHandler(404, "Company not found"));
+
+    const isRecruiter = req.userRole === "recruiter";
+    if (isRecruiter && !company.user.equals(req.userId)) {
+      return next(
+        errorHandler(403, "You are not authorized to view this company")
+      );
+    }
+
+    res.status(200).json({
+      success: true,
+      data: company,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateCompany = async (req, res) => {
   try {
-    const { name, description, logo, location, email, phone, website } =
+    const { name, description, logo, location, email, phone, website, active } =
       req.body;
 
     const { id } = req.params;

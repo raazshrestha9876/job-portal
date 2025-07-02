@@ -1,12 +1,12 @@
 import type { RootState } from "@/redux/store/store";
 import { useSelector } from "react-redux";
 
-export const useSelectedCompanyId = () => {
+export const useSelectedCompany = () => {
   const { selectedIndex, companies } = useSelector(
     (state: RootState) => state.companies
   );
 
   const selectedCompany = companies?.[selectedIndex];
 
-  return selectedCompany?._id ?? null;
+  return selectedCompany ?? null;
 };

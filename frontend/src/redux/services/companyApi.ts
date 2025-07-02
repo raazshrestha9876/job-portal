@@ -18,7 +18,7 @@ export const companyApi = createApi({
   }),
   tagTypes: ["Company"],
   endpoints: (builder) => ({
-    getCompany: builder.query<ICompany[], void>({
+    getOwnCompany: builder.query<ICompany[], void>({
       query: () => ({
         url: "/get",
         method: "GET",
@@ -26,7 +26,14 @@ export const companyApi = createApi({
       transformResponse: (response: { data: ICompany[] }) => response.data,
       providesTags: ["Company"],
     }),
-
+    getOwnCompanyDetails: builder.query<ICompany, string>({
+      query: (id) => ({
+        url: `/get/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (response: { data: ICompany }) => response.data,
+      providesTags: ["Company"],
+    }),
     addCompany: builder.mutation<void, AddCompanyRequest>({
       query: (data) => ({
         url: "/register",
@@ -59,7 +66,8 @@ export const companyApi = createApi({
 });
 
 export const {
-  useGetCompanyQuery,
+  useGetOwnCompanyQuery,
+  useGetOwnCompanyDetailsQuery,
   useAddCompanyMutation,
   useUpdateCompanyMutation,
   useDeleteCompanyMutation,
