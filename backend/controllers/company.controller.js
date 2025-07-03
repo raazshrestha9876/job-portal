@@ -1,4 +1,5 @@
 import Company from "../models/company.model.js";
+import { findCompanyAndAuthorize } from "../utils/companyUtils.js";
 import errorHandler from "../utils/errorHandler.js";
 
 export const registerCompany = async (req, res, next) => {
@@ -6,13 +7,15 @@ export const registerCompany = async (req, res, next) => {
     const { name, description, logo, location, email, phone, website } =
       req.body;
 
+    const recruiterId = req.userId;
+
     const existingCompany = await Company.findOne({ email });
     if (existingCompany) {
       return next(errorHandler(400, "Company already exists"));
     }
     const company = await Company.create({
       name,
-      user: req.userId,
+      user: recruiterId,
       description,
       logo,
       location,
@@ -32,8 +35,8 @@ export const registerCompany = async (req, res, next) => {
 
 export const getOwnCompany = async (req, res, next) => {
   try {
-    const companies = await Company.find({ user: req.userId });
-    if (!companies) return next(errorHandler(404, "Company not found"));
+    const recruiterId = req.userId;
+    const companies = await Company.find({ user: recruiterId });
     res.status(200).json({
       success: true,
       data: companies,
@@ -46,16 +49,12 @@ export const getOwnCompany = async (req, res, next) => {
 export const getOwnCompanyDetails = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const company = await Company.findById(id);
-    if (!company) return next(errorHandler(404, "Company not found"));
-
-    const isRecruiter = req.userRole === "recruiter";
-    if (isRecruiter && !company.user.equals(req.userId)) {
-      return next(
-        errorHandler(403, "You are not authorized to view this company")
-      );
-    }
-
+    const recruiterId = req.userId;
+    const company = await findCompanyAndAuthorize(
+      id,
+      recruiterId,
+      req.userRole,
+    );
     res.status(200).json({
       success: true,
       data: company,
@@ -65,14 +64,16 @@ export const getOwnCompanyDetails = async (req, res, next) => {
   }
 };
 
-export const updateCompany = async (req, res) => {
+export const updateCompany = async (req, res, next) => {
   try {
     const { name, description, logo, location, email, phone, website, active } =
       req.body;
 
     const { id } = req.params;
-    const company = await Company.findById(id);
-    if (!company) return next(errorHandler(404, "Company not found"));
+    const recruiterId = req.userId;
+
+    await findCompanyAndAuthorize(id, recruiterId, req.userRole);
+
     const updatedCompany = await Company.findByIdAndUpdate(
       id,
       {
@@ -98,11 +99,13 @@ export const updateCompany = async (req, res) => {
   }
 };
 
-export const deleteCompany = async (req, res) => {
+export const deleteCompany = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const company = await Company.findById(id);
-    if (!company) return next(errorHandler(404, "Company not found"));
+    const recruiterId = req.userId;
+
+    await findCompanyAndAuthorize(id, recruiterId, req.userRole);
+
     await Company.findByIdAndDelete(id);
     res.status(200).json({
       success: true,

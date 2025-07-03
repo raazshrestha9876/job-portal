@@ -4,24 +4,32 @@ import errorHandler from "../utils/errorHandler.js";
 
 export const applyJob = async (req, res, next) => {
   try {
-    const userId = req.userId;
-    const jobId = req.params.id;
+    const seekerId = req.userId;
+    const jobId = req.params.jobId;
+
+    const { message } = req.body;
+
     const existingApplication = await Application.findOne({
       job: jobId,
-      applicant: userId,
+      applicant: seekerId,
     });
+
     if (existingApplication) {
       return next(errorHandler(400, "You have already applied for this job."));
     }
     const newApplication = await Application.create({
       job: jobId,
-      applicant: userId,
+      applicant: seekerId,
+      message,
     });
-    const job = Job.applications.push(newApplication._id);
-    await job.save();
+
+    //increment job applications count
+    await Job.findByIdAndUpdate(jobId, { $inc: { applications: 1 } });
+
     return res.status(201).json({
       success: true,
       message: "Application submitted successfully",
+      data: newApplication,
     });
   } catch (error) {
     next(error);
@@ -30,8 +38,9 @@ export const applyJob = async (req, res, next) => {
 
 export const getAppliedJobs = async (req, res, next) => {
   try {
-    const userId = req.userId;
-    const application = await Application.find({ applicant: userId })
+    const seekerId = req.userId;
+
+    const application = await Application.find({ applicant: seekerId })
       .sort({ createdAt: -1 })
       .populate({
         path: "job",
@@ -41,6 +50,7 @@ export const getAppliedJobs = async (req, res, next) => {
           options: { sort: { createdAt: -1 } },
         },
       });
+
     return res.status(200).json({
       success: true,
       data: application,
@@ -50,21 +60,24 @@ export const getAppliedJobs = async (req, res, next) => {
   }
 };
 
-export const getApplicants = async (req, res, next) => {
+export const getApplications = async (req, res, next) => {
   try {
-    const jobId = req.params.id;
-    const job = await Job.findById(jobId).populate({
-      path: "applications",
-      options: { sort: { createdAt: -1 } },
-      populate: {
-        path: "applicant",
-        options: { sort: { createdAt: -1 } },
-      },
-    });
-    if (!job) return next(errorHandler(404, "Job not found"));
+    const jobId = req.params.jobId;
+    const recruiterId = req.userId;
+
+    const job = await Job.findOne({ _id: jobId, createdBy: recruiterId });
+    if (!job) {
+      return next(errorHandler(404, "Job not found or you are not authorized"));
+    }
+    const applications = await Application.find({
+      job: job._id,
+    })
+      .populate("job")
+      .populate("applicant");
+
     return res.status(200).json({
       success: true,
-      data: job.applications,
+      data: applications,
     });
   } catch (error) {
     next(error);
@@ -75,13 +88,31 @@ export const updateStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
     const applicationId = req.params.id;
-    const application = await Application.findOne({ _id: applicationId });
+    const recruiterId = req.userId;
+
+    const application = await Application.findOne({
+      _id: applicationId,
+    }).populate("job");
     if (!application) return next(errorHandler(404, "Application not found"));
+
+    if (recruiterId !== application.job.createdBy.toString()) {
+      return next(
+        errorHandler(403, "You are not authorized to update this application")
+      );
+    }
+
+    if (application.status !== "pending")
+      return next(errorHandler(400, "Application status is not pending"));
+
+    if (application.status === status)
+      return next(errorHandler(400, "Application status is already updated"));
+
     const updateApplication = await Application.findByIdAndUpdate(
       applicationId,
       { status },
       { new: true }
     );
+
     return res.status(200).json({
       success: true,
       message: "Application status updated successfully",

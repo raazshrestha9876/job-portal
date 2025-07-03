@@ -25,12 +25,15 @@ import {
   LogOut,
   Users,
 } from "lucide-react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 const RecruiterSidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+
+  const [activeLink, setActiveLink] = useState("dashboard");
 
   const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation();
 
@@ -73,11 +76,11 @@ const RecruiterSidebar = () => {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
-              
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  isActive={true}
+                  isActive={activeLink === "dashboard" ? true : false}
+                  onClick={() => setActiveLink("dashboard")}
                   className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-blue-600 data-[active=true]:text-white data-[active=true]:shadow-sm"
                 >
                   <Link to="/recruiter">
@@ -90,8 +93,9 @@ const RecruiterSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  isActive={false}
-                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  isActive={activeLink === "company" ? true : false}
+                  onClick={() => setActiveLink("company")}
+                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-blue-600 data-[active=true]:text-white data-[active=true]:shadow-sm"
                 >
                   <Link to="/recruiter/company">
                     <Factory className="size-4" />
@@ -103,12 +107,13 @@ const RecruiterSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  isActive={false}
-                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  isActive={activeLink === "job" ? true : false}
+                  onClick={() => setActiveLink("job")}
+                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-blue-600 data-[active=true]:text-white data-[active=true]:shadow-sm"
                 >
                   <Link to="/recruiter/job">
                     <Book className="size-4" />
-                    <span>Job</span>
+                    <span>Jobs</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -116,8 +121,9 @@ const RecruiterSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  isActive={false}
-                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  isActive={activeLink === "candidate" ? true : false}
+                  onClick={() => setActiveLink("candidate")}
+                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-blue-600 data-[active=true]:text-white data-[active=true]:shadow-sm"
                 >
                   <Link to="/candidates">
                     <Users className="size-4" />
@@ -128,8 +134,9 @@ const RecruiterSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  isActive={false}
-                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  isActive={activeLink === "application" ? true : false}
+                  onClick={() => setActiveLink("application")}
+                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-blue-600 data-[active=true]:text-white data-[active=true]:shadow-sm"
                 >
                   <Link to="/applications">
                     <File className="size-4" />
@@ -140,8 +147,9 @@ const RecruiterSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  isActive={false}
-                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  isActive={activeLink === "analytics" ? true : false}
+                  onClick={() => setActiveLink("analytics")}
+                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-blue-600 data-[active=true]:text-white data-[active=true]:shadow-sm"
                 >
                   <Link to="/analytics">
                     <ChartArea className="size-4" />

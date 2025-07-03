@@ -1,6 +1,7 @@
 import Company from "../models/company.model.js";
 import Job from "../models/job.model.js";
-import errorHandler from "../utils/errorHandler.js";
+import { findCompanyAndAuthorize } from "../utils/companyUtils.js";
+import { findJobAndAuthorize } from "../utils/jobUtils.js";
 
 export const postJob = async (req, res, next) => {
   try {
@@ -16,17 +17,8 @@ export const postJob = async (req, res, next) => {
       companyId,
     } = req.body;
 
-    const userId = req.userId;
-
-    const existingJob = await Job.findOne({ title: title });
-    if (existingJob) {
-      return next(errorHandler(400, "Job already exists"));
-    }
-
-    const existingCompany = await Company.findById(companyId);
-    if (!existingCompany) {
-      return next(errorHandler(404, "Company not found"));
-    }
+    const recruiterId = req.userId;
+    await findCompanyAndAuthorize(companyId, recruiterId, req.userRole);
 
     const job = await Job({
       title,
@@ -38,7 +30,7 @@ export const postJob = async (req, res, next) => {
       experience,
       position,
       company: companyId,
-      createdBy: userId,
+      createdBy: recruiterId,
     });
 
     await job.save();
@@ -55,9 +47,12 @@ export const postJob = async (req, res, next) => {
 
 export const getAllJobsForRecruiter = async (req, res, next) => {
   try {
-    const jobs = await Job.find({ createdBy: req.userId }).populate({
+    const recruiterId = req.userId;
+
+    const jobs = await Job.find({ createdBy: recruiterId }).populate({
       path: "company",
     });
+
     return res
       .status(200)
       .json({
@@ -73,26 +68,18 @@ export const getAllJobsForRecruiter = async (req, res, next) => {
 export const getJobDetailsForRecruiter = async (req, res, next) => {
   try {
     const jobId = req.params.id;
-    const job = await Job.findById(jobId).populate({
+    const recruiterId = req.userId;
+
+    const job = await Job.findOne({
+      _id: jobId,
+      createdBy: recruiterId,
+    }).populate({
       path: "company",
     });
-    if (!job) return next(errorHandler(404, "Job not found"));
+
     return res.status(200).json({
       success: true,
       data: job,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const getAdminJobs = async (req, res, next) => {
-  try {
-    const adminId = req.userId;
-    const jobs = await Job.find({ createdBy: adminId });
-    return res.status(200).json({
-      success: true,
-      data: jobs,
     });
   } catch (error) {
     next(error);
@@ -113,19 +100,24 @@ export const updateJob = async (req, res, next) => {
       position,
       companyId,
     } = req.body;
-    const requirementsArray = requirements.split(",");
-    const job = await Job.findByIdAndUpdate(
+
+    const recruiterId = req.userId;
+    await findJobAndAuthorize(jobId, recruiterId, req.userRole);
+
+    const updatedJob = await Job.findByIdAndUpdate(
       jobId,
       {
-        title,
-        description,
-        requirements: requirementsArray,
-        salary: Number(salary),
-        location,
-        jobType,
-        experience,
-        position,
-        companyId,
+        $set: {
+          title,
+          description,
+          requirements,
+          salary,
+          location,
+          jobType,
+          experience,
+          position,
+          companyId,
+        },
       },
       {
         new: true,
@@ -134,7 +126,7 @@ export const updateJob = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "Job updated successfully",
-      data: job,
+      data: updatedJob,
     });
   } catch (error) {
     next(error);
@@ -144,6 +136,10 @@ export const updateJob = async (req, res, next) => {
 export const deleteJob = async (req, res, next) => {
   try {
     const jobId = req.params.id;
+
+    const recruiterId = req.userId;
+    await findJobAndAuthorize(jobId, recruiterId, req.userRole);
+
     await Job.findByIdAndDelete(jobId);
     return res.status(200).json({
       success: true,

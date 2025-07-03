@@ -9,12 +9,12 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-import CompanyView from "@/components/recruiter/company/CompanyView";
 import { CompanyDeleteDialog } from "@/components/recruiter/company/CompanyDeleteDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "@/redux/store/store";
 import { companyDeleteDialogOpen, companyEditSheetOpen } from "@/redux/slice/company";
 import CompanyEditSheet from "@/components/recruiter/company/CompanyEditSheet";
+import CompanyViewItem from "@/components/recruiter/company/CompanyViewItem";
 
 const ViewCompanyPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -82,7 +82,7 @@ const ViewCompanyPage = () => {
       </div>
 
       {/* Content Section */}
-      <CompanyView
+      <CompanyViewItem
         onDeleteDialogOpen={handleDeleteDialogOpen}
         onEditSheetOpen={handleEditSheetOpen}
       />

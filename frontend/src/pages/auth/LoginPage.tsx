@@ -27,6 +27,7 @@ import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/redux/store/store";
 import { setLogin } from "@/redux/slice/auth";
 import { companyApi } from "@/redux/services/companyApi";
+import { jobApi } from "@/redux/services/jobApi";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -45,6 +46,7 @@ export default function LoginPage() {
       dispatch(setLogin(response));
       if (response.role === "recruiter") {
         dispatch(companyApi.util.invalidateTags(["Company"]));
+        dispatch(jobApi.util.invalidateTags(['Job']));
         navigate("/recruiter");
       } else if (response.role === "seeker") {
         navigate("/seeker");

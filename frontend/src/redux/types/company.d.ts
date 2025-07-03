@@ -12,8 +12,8 @@ export interface ICompany {
 }
 
 export interface ICompanyState {
-    companies: ICompany[];
-    isCompanyDeleteDialogOpen: boolean;
-    isCompanyEditSheetOpen: boolean;
-    selectedIndex: number;
+  companies: ICompany[];
+  isCompanyDeleteDialogOpen: boolean;
+  isCompanyEditSheetOpen: boolean;
+  selectedIndex: number;
 }

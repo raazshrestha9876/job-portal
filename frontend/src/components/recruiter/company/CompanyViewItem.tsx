@@ -31,7 +31,7 @@ interface CompanyViewProps {
   onEditSheetOpen: (index: number, open: boolean) => void;
 }
 
-const CompanyView = ({
+const CompanyViewItem = ({
   onDeleteDialogOpen,
   onEditSheetOpen,
 }: CompanyViewProps) => {
@@ -189,4 +189,4 @@ const CompanyView = ({
   );
 };
 
-export default CompanyView;
+export default CompanyViewItem;
