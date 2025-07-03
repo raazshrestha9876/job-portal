@@ -1,3 +1,4 @@
+import Company from "../models/company.model.js";
 import Job from "../models/job.model.js";
 import errorHandler from "../utils/errorHandler.js";
 
@@ -14,25 +15,38 @@ export const postJob = async (req, res, next) => {
       position,
       companyId,
     } = req.body;
+
     const userId = req.userId;
-    const requirementsArray = requirements.split(",");
+
+    const existingJob = await Job.findOne({ title: title });
+    if (existingJob) {
+      return next(errorHandler(400, "Job already exists"));
+    }
+
+    const existingCompany = await Company.findById(companyId);
+    if (!existingCompany) {
+      return next(errorHandler(404, "Company not found"));
+    }
+    
     const job = await Job({
       title,
       description,
-      requirements: requirementsArray,
-      salary: Number(salary),
+      requirements,
+      salary,
       location,
       jobType,
       experience,
       position,
       company: companyId,
-      created_by: userId,
+      createdBy: userId,
     });
+
     await job.save();
+
     return res.status(201).json({
       success: true,
       message: "Job posted successfully",
-      data: job
+      data: job,
     });
   } catch (error) {
     next(error);
