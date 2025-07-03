@@ -77,14 +77,12 @@ const CompanyView = ({
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3">
           {companies?.map((company, index) => (
             <Card
               key={company._id}
               className="group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0  bg-white/90 backdrop-blur-sm overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
               <CardHeader className="pb-4 relative z-10">
                 <div className="flex items-start gap-4">
                   <div className="relative">

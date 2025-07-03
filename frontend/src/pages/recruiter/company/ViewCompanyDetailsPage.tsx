@@ -1,5 +1,5 @@
 import {
-  ArrowLeft,
+
   Building2,
   Calendar,
   ExternalLink,
@@ -16,7 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Link, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 
 import { useGetOwnCompanyDetailsQuery } from "@/redux/services/companyApi";
 import {

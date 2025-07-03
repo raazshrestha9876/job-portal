@@ -16,6 +16,7 @@ import { useLogoutMutation } from "@/redux/services/authApi";
 import { setLogout } from "@/redux/slice/auth";
 import { type AppDispatch } from "@/redux/store/store";
 import {
+  Book,
   AreaChartIcon as ChartArea,
   Factory,
   File,
@@ -72,6 +73,7 @@ const RecruiterSidebar = () => {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
+              
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
@@ -84,6 +86,7 @@ const RecruiterSidebar = () => {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
@@ -96,6 +99,20 @@ const RecruiterSidebar = () => {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={false}
+                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                >
+                  <Link to="/recruiter/job">
+                    <Book className="size-4" />
+                    <span>Job</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild

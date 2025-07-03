@@ -27,7 +27,7 @@ export const postJob = async (req, res, next) => {
     if (!existingCompany) {
       return next(errorHandler(404, "Company not found"));
     }
-    
+
     const job = await Job({
       title,
       description,
@@ -53,16 +53,9 @@ export const postJob = async (req, res, next) => {
   }
 };
 
-export const getAllJobs = async (req, res, next) => {
+export const getAllJobsForRecruiter = async (req, res, next) => {
   try {
-    const keyword = req.query.keyword || "";
-    const query = {
-      $or: [
-        { title: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
-      ],
-    };
-    const jobs = await Job.find(query).populate({
+    const jobs = await Job.find({ createdBy: req.userId }).populate({
       path: "company",
     });
     return res
@@ -77,10 +70,12 @@ export const getAllJobs = async (req, res, next) => {
   }
 };
 
-export const getJobById = async (req, res, next) => {
+export const getJobDetailsForRecruiter = async (req, res, next) => {
   try {
     const jobId = req.params.id;
-    const job = await Job.findById(jobId);
+    const job = await Job.findById(jobId).populate({
+      path: "company",
+    });
     if (!job) return next(errorHandler(404, "Job not found"));
     return res.status(200).json({
       success: true,
