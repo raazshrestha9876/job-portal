@@ -62,6 +62,7 @@ export const getAppliedJobs = async (req, res, next) => {
 
 export const getApplications = async (req, res, next) => {
   try {
+    
     const jobId = req.params.jobId;
     const recruiterId = req.userId;
 

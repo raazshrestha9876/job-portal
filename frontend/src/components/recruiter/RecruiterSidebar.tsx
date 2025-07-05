@@ -144,19 +144,6 @@ const RecruiterSidebar = () => {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={activeLink === "analytics" ? true : false}
-                  onClick={() => setActiveLink("analytics")}
-                  className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-blue-600 data-[active=true]:text-white data-[active=true]:shadow-sm"
-                >
-                  <Link to="/analytics">
-                    <ChartArea className="size-4" />
-                    <span>Analytics</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

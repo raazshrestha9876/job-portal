@@ -6,10 +6,9 @@ import {
   getAppliedJobs,
   updateStatus,
 } from "../controllers/application.controller.js";
-import { applyJobValidation } from "../validators/job.validator.js";
 import { validate } from "../middleware/validator.js";
 import { authorizeRole } from "../middleware/authorizeRole.js";
-import { updateApplicationStatus } from "../validators/application.validator.js";
+import { applyJobValidation, updateApplicationStatus } from "../validators/application.validator.js";
 
 const router = express.Router();
 
